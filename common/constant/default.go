@@ -18,6 +18,7 @@
 package constant
 
 import (
+	"dubbo.apache.org/dubbo-go/v3/dubbox/key"
 	"math"
 )
 
@@ -59,10 +60,17 @@ const (
 	// DefaultServiceFilters defines default service filters, it is highly recommended
 	// that put the AdaptiveServiceProviderFilterKey at the end.
 	DefaultServiceFilters = EchoFilterKey + "," +
-		MetricsFilterKey + "," + TokenFilterKey + "," + AccessLogFilterKey + "," + TpsLimitFilterKey + "," +
-		GenericServiceFilterKey + "," + ExecuteLimitFilterKey + "," + GracefulShutdownProviderFilterKey
+		MetricsFilterKey + "," +
+		key.DubboxProviderTraceFilterKey + "," +
+		TokenFilterKey + "," +
+		AccessLogFilterKey + "," +
+		TpsLimitFilterKey + "," +
+		GenericServiceFilterKey + "," +
+		ExecuteLimitFilterKey + "," +
+		GracefulShutdownProviderFilterKey
 
-	DefaultReferenceFilters = GracefulShutdownConsumerFilterKey
+	DefaultReferenceFilters = key.DubboxConsumerTraceFilterKey + "," +
+		GracefulShutdownConsumerFilterKey
 )
 
 const (

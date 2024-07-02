@@ -82,4 +82,7 @@ import (
 	_ "dubbo.apache.org/dubbo-go/v3/registry/zookeeper"
 	_ "dubbo.apache.org/dubbo-go/v3/xds/client/controller/version/v2"
 	_ "dubbo.apache.org/dubbo-go/v3/xds/client/controller/version/v3"
+
+	// dubbox imports
+	_ "dubbo.apache.org/dubbo-go/v3/dubbox"
 )

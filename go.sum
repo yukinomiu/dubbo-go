@@ -1921,6 +1921,8 @@ gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c/go.mod h1:K4uyk7z7BCEPqu6E+C
 gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
 gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=
 gopkg.in/yaml.v3 v3.0.1/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
+gopkg.inshopline.com/commons/constx v1.1.1 h1:iJCdL+F8uibslq5jNQdxTZmbNwY+xiYSShK3P47ju/Q=
+gopkg.inshopline.com/commons/constx v1.1.1/go.mod h1:4JItXcYHi6xqnqiSkE5zhcuBiWGRU+avI5DkUAackdQ=
 gopkg.inshopline.com/commons/loadx v1.3.0 h1:34VxYkWMP/JfCtxU2E2zam2W/tAR0gxHbwU/ogS55Nw=
 gopkg.inshopline.com/commons/loadx v1.3.0/go.mod h1:CYrhd7b9bSEHUEVBT1NqFq7Ix4XRKcSHbKXXSK2NSVE=
 gopkg.inshopline.com/commons/logx v1.0.3 h1:QHLSDGktRAeUBqHG8L0g6uneYT4n+kQTME3zeBloL7Y=
