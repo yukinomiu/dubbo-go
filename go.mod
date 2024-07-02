@@ -49,7 +49,7 @@ require (
 	github.com/prometheus/client_golang v1.13.0
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
 	github.com/sirupsen/logrus v1.7.0
-	github.com/stretchr/testify v1.8.2
+	github.com/stretchr/testify v1.9.0
 	go.etcd.io/etcd/api/v3 v3.5.7
 	go.etcd.io/etcd/client/v2 v2.305.0 // indirect
 	go.etcd.io/etcd/client/v3 v3.5.7
@@ -64,4 +64,5 @@ require (
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gopkg.in/yaml.v2 v2.4.0
+	gopkg.inshopline.com/commons/loadx v1.3.0
 )

@@ -66,7 +66,7 @@ type ShutdownConfig struct {
 	// when we try to shutdown the applicationConfig, we will reject the new requests. In most cases, you don't need to configure this.
 	RejectRequestHandler string `yaml:"reject-handler" json:"reject-handler,omitempty" property:"reject_handler"`
 	// internal listen kill signal，the default is true.
-	InternalSignal *bool `default:"true" yaml:"internal-signal" json:"internal.signal,omitempty" property:"internal.signal"`
+	InternalSignal *bool `default:"false" yaml:"internal-signal" json:"internal.signal,omitempty" property:"internal.signal"`
 	// offline request window length
 	OfflineRequestWindowTimeout string `yaml:"offline-request-window-timeout" json:"offlineRequestWindowTimeout,omitempty" property:"offlineRequestWindowTimeout"`
 	// true -> new request will be rejected.
