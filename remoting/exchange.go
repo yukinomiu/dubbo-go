@@ -168,8 +168,32 @@ func (r PendingResponse) GetCallResponse() common.CallbackResponse {
 }
 
 // AddPendingResponse stores the response into map
-func AddPendingResponse(pr *PendingResponse) {
-	pendingResponses.Store(SequenceType(pr.seq), pr)
+func AddPendingResponse(pr *PendingResponse, timeout time.Duration) {
+	seq := SequenceType(pr.seq)
+	pendingResponses.Store(seq, pr)
+
+	go func() {
+		defer func() {
+			if r := recover(); r != nil {
+				logger.Errorf("clean timeout pending response panic: %v", r)
+			}
+		}()
+
+		if timeout <= 0 {
+			timeout = 10 * time.Second
+		}
+		cleanTimeout := timeout * 2
+
+		select {
+		case <-time.After(cleanTimeout):
+			if _, ok := pendingResponses.LoadAndDelete(seq); ok {
+				logger.Infof("pending response was deleted after clean timeout: %v, seq: %v",
+					cleanTimeout.String(), int64(seq))
+			}
+		case <-pr.Done:
+			return
+		}
+	}()
 }
 
 // get and remove response

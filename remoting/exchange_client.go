@@ -126,7 +126,7 @@ func (client *ExchangeClient) Request(invocation *protocol.Invocation, url *comm
 	rsp := NewPendingResponse(request.ID)
 	rsp.response = NewResponse(request.ID, "2.0.2")
 	rsp.Reply = (*invocation).Reply()
-	AddPendingResponse(rsp)
+	AddPendingResponse(rsp, timeout)
 
 	err := client.client.Request(request, timeout, rsp)
 	// request error
@@ -160,7 +160,7 @@ func (client *ExchangeClient) AsyncRequest(invocation *protocol.Invocation, url 
 	rsp.response = NewResponse(request.ID, "2.0.2")
 	rsp.Callback = callback
 	rsp.Reply = (*invocation).Reply()
-	AddPendingResponse(rsp)
+	AddPendingResponse(rsp, timeout)
 
 	err := client.client.Request(request, timeout, rsp)
 	if err != nil {

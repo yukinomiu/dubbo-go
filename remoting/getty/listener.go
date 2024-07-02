@@ -342,7 +342,7 @@ func heartbeat(session getty.Session, timeout time.Duration, callBack func(err e
 	req.TwoWay = true
 	req.Event = true
 	resp := remoting.NewPendingResponse(req.ID)
-	remoting.AddPendingResponse(resp)
+	remoting.AddPendingResponse(resp, timeout)
 	totalLen, sendLen, err := session.WritePkg(req, -1)
 	if sendLen != 0 && totalLen != sendLen {
 		logger.Warnf("start to close the session at heartbeat because %d of %d bytes data is sent success. err:%+v", sendLen, totalLen, err)
