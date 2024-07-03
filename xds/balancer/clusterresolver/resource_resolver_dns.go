@@ -25,6 +25,7 @@ package clusterresolver
 
 import (
 	"fmt"
+	"net/url"
 )
 
 import (
@@ -58,7 +59,18 @@ func newDNSResolver(target string, topLevelResolver *resourceResolver) *dnsDisco
 		target:           target,
 		topLevelResolver: topLevelResolver,
 	}
-	r, err := newDNS(resolver.Target{Scheme: "dns", Endpoint: target}, ret, resolver.BuildOptions{})
+
+	// dubbox fix
+	var (
+		err error
+		u   *url.URL
+		r   resolver.Resolver
+	)
+	u, err = url.Parse("dns://" + target)
+	if err == nil {
+		r, err = newDNS(resolver.Target{URL: *u}, ret, resolver.BuildOptions{})
+	}
+
 	if err != nil {
 		select {
 		case <-topLevelResolver.updateChannel:

@@ -44,8 +44,9 @@ type builder struct {
 }
 
 func (b *builder) Build(target resolver.Target, cc resolver.ClientConn, _ resolver.BuildOptions) (resolver.Resolver, error) {
-	if target.Authority != "" {
-		return nil, fmt.Errorf("invalid (non-empty) authority: %v", target.Authority)
+	// dubbox fix
+	if authority := target.URL.Host; authority != "" {
+		return nil, fmt.Errorf("invalid (non-empty) authority: %v", authority)
 	}
 
 	// gRPC was parsing the dial target manually before PR #4817, and we
