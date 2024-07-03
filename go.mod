@@ -9,8 +9,8 @@ require (
 	github.com/Workiva/go-datastructures v1.0.52
 	github.com/afex/hystrix-go v0.0.0-20180502004556-fa1af6a1f4f5
 	github.com/alibaba/sentinel-golang v1.0.4
-	github.com/apache/dubbo-getty v1.4.9
-	github.com/apache/dubbo-go-hessian2 v1.12.2
+	github.com/apache/dubbo-getty v1.5.0
+	github.com/apache/dubbo-go-hessian2 v1.12.4
 	github.com/cespare/xxhash/v2 v2.2.0
 	github.com/cncf/udpa/go v0.0.0-20220112060539-c52dc94e7fbe
 	github.com/cncf/xds/go v0.0.0-20231128003011-0fa0005c9caa
