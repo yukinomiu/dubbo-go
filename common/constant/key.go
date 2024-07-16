@@ -266,6 +266,7 @@ const (
 	NacosPassword             = "nacos.password"
 	NacosTimeout              = "nacos.timeout"
 	NacosUpdateCacheWhenEmpty = "nacos.updateCacheWhenEmpty"
+	NacosAsyncUpdateService   = "nacos.asyncUpdateService" // dubbox feature
 )
 
 const (

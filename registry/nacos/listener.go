@@ -22,6 +22,7 @@ import (
 	"net/url"
 	"reflect"
 	"strconv"
+	"strings"
 	"sync"
 )
 
@@ -124,8 +125,15 @@ func generateUrl(instance model.Instance) *common.URL {
 // Callback will be invoked when got subscribed events.
 func (nl *nacosListener) Callback(services []model.Instance, err error) {
 	if err != nil {
-		logger.Errorf("nacos subscribe callback error:%s , subscribe:%+v ", err.Error(), nl.subscribeParam)
-		return
+		// dubbox fix
+		errStr := err.Error()
+		if strings.Contains(errStr, "hosts is empty") {
+			logger.Warnf("nacos subscribe callback error:%s, subscribe:%+v ", errStr, nl.subscribeParam)
+			// continue
+		} else {
+			logger.Errorf("nacos subscribe callback error:%s, subscribe:%+v ", errStr, nl.subscribeParam)
+			return
+		}
 	}
 
 	addInstances := make([]model.Instance, 0, len(services))

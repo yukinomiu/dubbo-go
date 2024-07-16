@@ -104,6 +104,7 @@ func GetNacosConfig(url *common.URL) ([]nacosConstant.ServerConfig, nacosConstan
 		LogDir:               url.GetParam(constant.NacosLogDirKey, ""),
 		LogLevel:             url.GetParam(constant.NacosLogLevelKey, "info"),
 		UpdateCacheWhenEmpty: url.GetParamBool(constant.NacosUpdateCacheWhenEmpty, true),
+		AsyncUpdateService:   url.GetParamBool(constant.NacosAsyncUpdateService, true),
 	}
 	return serverConfigs, clientConfig, nil
 }
