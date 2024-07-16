@@ -68,6 +68,7 @@ require (
 	google.golang.org/protobuf v1.34.2
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gopkg.in/yaml.v2 v2.4.0
+	gopkg.inshopline.com/commons/chaos-go-agent v1.0.0
 	gopkg.inshopline.com/commons/constx v1.1.1
 	gopkg.inshopline.com/commons/loadx v1.3.0
 	gopkg.inshopline.com/commons/metricx v1.0.1
@@ -123,6 +124,8 @@ require (
 	github.com/openzipkin/zipkin-go v0.4.2 // indirect
 	github.com/pelletier/go-toml v1.9.3 // indirect
 	github.com/pierrec/lz4 v2.5.2+incompatible // indirect
+	github.com/pingcap/errors v0.11.4 // indirect
+	github.com/pingcap/failpoint v1.99.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/power-devops/perfstat v0.0.0-20210106213030-5aafc221ea8c // indirect
 	github.com/prometheus/client_model v0.5.0 // indirect
@@ -155,10 +158,10 @@ require (
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gopkg.inshopline.com/commons/api v1.0.0 // indirect
-	gopkg.inshopline.com/commons/bizerror v1.1.0 // indirect
-	gopkg.inshopline.com/commons/configx v1.0.1 // indirect
-	gopkg.inshopline.com/commons/env v1.0.0 // indirect
+	gopkg.inshopline.com/commons/bizerror v1.2.1 // indirect
+	gopkg.inshopline.com/commons/configx v1.0.5 // indirect
+	gopkg.inshopline.com/commons/env v1.1.1 // indirect
 	gopkg.inshopline.com/commons/logx v1.0.3 // indirect
 	gopkg.inshopline.com/commons/traffic-plugins v1.0.0 // indirect
-	gopkg.inshopline.com/commons/utils v1.0.0 // indirect
+	gopkg.inshopline.com/commons/utils v1.2.0 // indirect
 )
