@@ -19,7 +19,9 @@ package proxy_factory
 
 import (
 	"fmt"
+	"github.com/dubbogo/gost/log/logger"
 	"reflect"
+	"runtime/debug"
 )
 
 import (
@@ -36,6 +38,9 @@ func callLocalMethod(method reflect.Method, in []reflect.Value) ([]reflect.Value
 	func() {
 		defer func() {
 			if e := recover(); e != nil {
+				// dubbox feature
+				logger.Errorf("provider panic recovered, panic: %+v\n%s", e, string(debug.Stack()))
+
 				if err, ok := e.(error); ok {
 					retErr = err
 				} else if err, ok := e.(string); ok {
