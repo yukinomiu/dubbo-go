@@ -19,6 +19,7 @@ package proxy
 
 import (
 	"context"
+	"dubbo.apache.org/dubbo-go/v3/dubbox/routing"
 	"errors"
 	"reflect"
 	"sync"
@@ -198,6 +199,9 @@ func DefaultProxyImplementFunc(p *Proxy, v common.RPCService) {
 					inv.SetAttachment(k, value)
 				}
 			}
+
+			// dubbox feature: transfer context tag key to dubbo attachment
+			routing.SetRoutingTag(invCtx, inv)
 
 			result := p.invoke.Invoke(invCtx, inv)
 			err = result.Error()
