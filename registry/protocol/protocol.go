@@ -152,6 +152,7 @@ func (proto *registryProtocol) Refer(url *common.URL) protocol.Invoker {
 	if err != nil {
 		logger.Errorf("consumer service %v create registry directory error, error message is %s, and will return nil invoker!",
 			serviceUrl.String(), err.Error())
+		logger.Warn("dubbox: provider not found, use nil invoker instead")
 		return nil
 	}
 

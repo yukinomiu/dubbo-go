@@ -92,6 +92,7 @@ func (dp *DubboProtocol) Refer(url *common.URL) protocol.Invoker {
 	exchangeClient := getExchangeClient(url)
 	if exchangeClient == nil {
 		logger.Warnf("can't dial the server: %+v", url.Location)
+		logger.Warn("dubbox: provider not found, use nil invoker instead")
 		return nil
 	}
 	invoker := NewDubboInvoker(url, exchangeClient)

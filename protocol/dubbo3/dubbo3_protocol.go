@@ -137,6 +137,7 @@ func (dp *DubboProtocol) Refer(url *common.URL) protocol.Invoker {
 	invoker, err := NewDubboInvoker(url)
 	if err != nil {
 		logger.Errorf("Refer url = %+v, with error = %s", url, err.Error())
+		logger.Warn("dubbox: provider not found, use nil invoker instead")
 		return nil
 	}
 	dp.SetInvokers(invoker)
