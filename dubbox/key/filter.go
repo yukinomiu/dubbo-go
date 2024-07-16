@@ -12,6 +12,8 @@ const (
 	DubboxProviderTagFilterKey = "dubbox-provider-tag"
 	DubboxConsumerTagFilterKey = "dubbox-consumer-tag"
 
+	DubboxConsumerMetaFilterKey = "dubbox-consumer-meta"
+
 	DubboxProviderTrafficFilterKey = traffic_dubbo_consts.TrafficProviderFilter
 	DubboxConsumerTrafficFilterKey = traffic_dubbo_consts.TrafficConsumerFilter
 )
