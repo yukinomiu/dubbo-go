@@ -784,6 +784,14 @@ func MergeURL(serviceURL *URL, referenceURL *URL) *URL {
 		params[constant.TimestampKey] = []string{referenceURL.GetParam(constant.TimestampKey, "")}
 	}
 
+	// dubbox fix: referenceURL params has higher priority than serviceURL params within these keys:
+	// constant.LoadbalanceKey, constant.ClusterKey, constant.RetriesKey, constant.TimeoutKey
+	for _, paramKey := range []string{constant.LoadbalanceKey, constant.ClusterKey, constant.RetriesKey, constant.TimeoutKey} {
+		if v := referenceURL.GetParam(paramKey, ""); len(v) > 0 {
+			params[paramKey] = []string{v}
+		}
+	}
+
 	// finally execute methodConfigMergeFcn
 	for _, method := range referenceURL.Methods {
 		for _, paramKey := range []string{constant.LoadbalanceKey, constant.ClusterKey, constant.RetriesKey, constant.TimeoutKey} {
