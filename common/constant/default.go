@@ -61,6 +61,7 @@ const (
 	// that put the AdaptiveServiceProviderFilterKey at the end.
 	DefaultServiceFilters = EchoFilterKey + "," +
 		key.DubboxProviderTraceFilterKey + "," +
+		key.DubboxProviderMetricFilterKey + "," +
 		key.DubboxProviderTagFilterKey + "," +
 		// key.DubboxProviderTrafficFilterKey + "," +
 		TokenFilterKey + "," +
@@ -71,6 +72,7 @@ const (
 		GracefulShutdownProviderFilterKey
 
 	DefaultReferenceFilters = key.DubboxConsumerTraceFilterKey + "," +
+		key.DubboxConsumerMetricFilterKey + "," +
 		key.DubboxConsumerTagFilterKey + "," +
 		// key.DubboxConsumerTrafficFilterKey + "," +
 		GracefulShutdownConsumerFilterKey

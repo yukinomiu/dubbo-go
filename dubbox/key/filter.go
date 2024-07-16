@@ -6,6 +6,9 @@ const (
 	DubboxProviderTraceFilterKey = "dubbox-provider-trace"
 	DubboxConsumerTraceFilterKey = "dubbox-consumer-trace"
 
+	DubboxProviderMetricFilterKey = "dubbox-provider-metric"
+	DubboxConsumerMetricFilterKey = "dubbox-consumer-metric"
+
 	DubboxProviderTagFilterKey = "dubbox-provider-tag"
 	DubboxConsumerTagFilterKey = "dubbox-consumer-tag"
 
