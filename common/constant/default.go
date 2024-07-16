@@ -62,6 +62,7 @@ const (
 	DefaultServiceFilters = EchoFilterKey + "," +
 		key.DubboxProviderTraceFilterKey + "," +
 		key.DubboxProviderTagFilterKey + "," +
+		// key.DubboxProviderTrafficFilterKey + "," +
 		TokenFilterKey + "," +
 		AccessLogFilterKey + "," +
 		TpsLimitFilterKey + "," +
@@ -71,6 +72,7 @@ const (
 
 	DefaultReferenceFilters = key.DubboxConsumerTraceFilterKey + "," +
 		key.DubboxConsumerTagFilterKey + "," +
+		// key.DubboxConsumerTrafficFilterKey + "," +
 		GracefulShutdownConsumerFilterKey
 )
 

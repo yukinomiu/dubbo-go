@@ -18,6 +18,7 @@
 package config
 
 import (
+	"dubbo.apache.org/dubbo-go/v3/dubbox/hook"
 	"errors"
 	"reflect"
 	"strconv"
@@ -65,6 +66,8 @@ func Load(opts ...LoaderConfOption) error {
 	if err := rootConfig.Init(); err != nil {
 		return err
 	}
+
+	hook.ExecuteAfterRCLoadHook()
 	return nil
 }
 
