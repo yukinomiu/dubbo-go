@@ -18,6 +18,7 @@
 package config
 
 import (
+	"dubbo.apache.org/dubbo-go/v3/dubbox/config"
 	"sync"
 )
 
@@ -66,6 +67,7 @@ type RootConfig struct {
 	Custom              *CustomConfig              `yaml:"custom" json:"custom,omitempty" property:"custom"`
 	Profiles            *ProfilesConfig            `yaml:"profiles" json:"profiles,omitempty" property:"profiles"`
 	TLSConfig           *TLSConfig                 `yaml:"tls_config" json:"tls_config,omitempty" property:"tls_config"`
+	DubboxConfig        *config.DubboxConfig       `yaml:"dubbox-config" json:"dubbox-config,omitempty" property:"dubbox-config"`
 }
 
 func SetRootConfig(r RootConfig) {

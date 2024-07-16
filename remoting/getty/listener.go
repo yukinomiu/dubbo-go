@@ -18,6 +18,7 @@
 package getty
 
 import (
+	"dubbo.apache.org/dubbo-go/v3/config"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -152,9 +153,12 @@ func (h *RpcClientHandler) OnCron(session getty.Session) {
 	heartbeatCallBack := func(err error) {
 		if err != nil {
 			logger.Warnf("failed to send heartbeat, error{%v}", err)
-			if h.timeoutTimes >= 3 {
-				h.conn.removeSession(session)
-				return
+			if rc := config.GetRootConfig(); rc == nil || rc.DubboxConfig == nil || !rc.DubboxConfig.Flag.DisableConsumerCloseConnAfterPingFailed {
+				if h.timeoutTimes >= 3 {
+					logger.Warnf("remove consumer session after heartbeat failed with %d times", h.timeoutTimes)
+					h.conn.removeSession(session)
+					return
+				}
 			}
 			h.timeoutTimes++
 			return
@@ -309,12 +313,15 @@ func (h *RpcServerHandler) OnCron(session getty.Session) {
 	heartbeatCallBack := func(err error) {
 		if err != nil {
 			logger.Warnf("failed to send heartbeat, error{%v}", err)
-			if h.timeoutTimes >= 3 {
-				h.rwlock.Lock()
-				delete(h.sessionMap, session)
-				h.rwlock.Unlock()
-				session.Close()
-				return
+			if rc := config.GetRootConfig(); rc == nil || rc.DubboxConfig == nil || !rc.DubboxConfig.Flag.DisableProviderCloseConnAfterPingFailed {
+				if h.timeoutTimes >= 3 {
+					logger.Warnf("close provider session after heartbeat failed with %d times", h.timeoutTimes)
+					h.rwlock.Lock()
+					delete(h.sessionMap, session)
+					h.rwlock.Unlock()
+					session.Close()
+					return
+				}
 			}
 			h.timeoutTimes++
 			return
