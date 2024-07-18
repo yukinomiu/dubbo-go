@@ -158,7 +158,7 @@ require (
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gopkg.inshopline.com/commons/api v1.0.0 // indirect
-	gopkg.inshopline.com/commons/bizerror v1.2.1 // indirect
+	gopkg.inshopline.com/commons/bizerror v1.2.2 // indirect
 	gopkg.inshopline.com/commons/configx v1.0.5 // indirect
 	gopkg.inshopline.com/commons/env v1.1.1 // indirect
 	gopkg.inshopline.com/commons/logx v1.0.3 // indirect
