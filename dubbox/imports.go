@@ -8,4 +8,7 @@ import (
 	_ "dubbo.apache.org/dubbo-go/v3/dubbox/filter/trace"
 	_ "dubbo.apache.org/dubbo-go/v3/dubbox/filter/traffic"
 	_ "dubbo.apache.org/dubbo-go/v3/dubbox/logger"
+
+	// enable tag-routing
+	_ "dubbo.apache.org/dubbo-go/v3/cluster/router/tag"
 )
