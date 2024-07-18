@@ -204,7 +204,8 @@ func (h *RpcServerHandler) OnOpen(session getty.Session) error {
 		return perrors.WithStack(err)
 	}
 
-	logger.Infof("got session:%s", session.Stat())
+	// dubbox: change logger level to DEBUG
+	logger.Debugf("got session:%s", session.Stat())
 	h.rwlock.Lock()
 	h.sessionMap[session] = &rpcSession{session: session}
 	h.rwlock.Unlock()
