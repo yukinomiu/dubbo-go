@@ -38,7 +38,8 @@ import (
 
 type LoggerConfig struct {
 	// logger driver default zap
-	Driver string `default:"zap" yaml:"driver"`
+	// dubbox: use logx instead
+	Driver string `default:"logx" yaml:"driver"`
 
 	// logger level
 	Level string `default:"info" yaml:"level"`

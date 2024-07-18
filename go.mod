@@ -71,6 +71,7 @@ require (
 	gopkg.inshopline.com/commons/chaos-go-agent v1.0.0
 	gopkg.inshopline.com/commons/constx v1.1.1
 	gopkg.inshopline.com/commons/loadx v1.3.0
+	gopkg.inshopline.com/commons/logx v1.0.3
 	gopkg.inshopline.com/commons/metricx v1.0.1
 	gopkg.inshopline.com/commons/traffic-plugin-dubbo v0.0.2
 )
@@ -161,7 +162,6 @@ require (
 	gopkg.inshopline.com/commons/bizerror v1.2.2 // indirect
 	gopkg.inshopline.com/commons/configx v1.0.5 // indirect
 	gopkg.inshopline.com/commons/env v1.1.1 // indirect
-	gopkg.inshopline.com/commons/logx v1.0.3 // indirect
 	gopkg.inshopline.com/commons/traffic-plugins v1.0.0 // indirect
 	gopkg.inshopline.com/commons/utils v1.2.0 // indirect
 )
