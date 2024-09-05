@@ -20,28 +20,28 @@ type (
 
 func NewLogxAdaptor(name string) *LogxAdaptor {
 	return &LogxAdaptor{
-		RawLogger: logx.GetRawLogger(name),
+		RawLogger: logx.GetLibLogger(name).NoContext(),
 	}
 }
 
 func (l *LogxAdaptor) Info(args ...interface{}) {
-	l.RawLogger.Info("", args...)
+	logging(l.RawLogger.Info, args...)
 }
 
 func (l *LogxAdaptor) Warn(args ...interface{}) {
-	l.RawLogger.Warn("", args...)
+	logging(l.RawLogger.Warn, args...)
 }
 
 func (l *LogxAdaptor) Error(args ...interface{}) {
-	l.RawLogger.Error("", args...)
+	logging(l.RawLogger.Error, args...)
 }
 
 func (l *LogxAdaptor) Debug(args ...interface{}) {
-	l.RawLogger.Debug("", args...)
+	logging(l.RawLogger.Debug, args...)
 }
 
 func (l *LogxAdaptor) Fatal(args ...interface{}) {
-	l.RawLogger.Error("", args...)
+	logging(l.RawLogger.Error, args...)
 	os.Exit(1)
 }
 
@@ -64,6 +64,26 @@ func (l *LogxAdaptor) Debugf(fmt string, args ...interface{}) {
 func (l *LogxAdaptor) Fatalf(fmt string, args ...interface{}) {
 	l.RawLogger.Errorf(fmt, args...)
 	os.Exit(1)
+}
+
+func logging(logger func(message string, fields ...any), args ...interface{}) {
+	if len(args) == 0 {
+		return
+	} else if len(args) == 1 {
+		arg := args[0]
+		if s, ok := arg.(string); ok {
+			logger(s)
+		} else {
+			logger("", arg)
+		}
+	} else {
+		arg := args[0]
+		if s, ok := arg.(string); ok {
+			logger(s, args[1:]...)
+		} else {
+			logger("", args...)
+		}
+	}
 }
 
 func init() {

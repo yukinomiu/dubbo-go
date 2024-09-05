@@ -34,7 +34,7 @@ require (
 	github.com/hashicorp/golang-lru v0.5.4
 	github.com/hashicorp/vault/sdk v0.7.0
 	github.com/influxdata/tdigest v0.0.1
-	github.com/jinzhu/copier v0.3.5
+	github.com/jinzhu/copier v0.4.0
 	github.com/knadh/koanf v1.5.0
 	github.com/magiconair/properties v1.8.7
 	github.com/mattn/go-colorable v0.1.13
@@ -69,9 +69,9 @@ require (
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.inshopline.com/commons/chaos-go-agent v1.0.0
-	gopkg.inshopline.com/commons/constx v1.1.1
+	gopkg.inshopline.com/commons/constx v1.1.4-0.20240902032329-d2f9d4743509
 	gopkg.inshopline.com/commons/loadx v1.3.0
-	gopkg.inshopline.com/commons/logx v1.0.3
+	gopkg.inshopline.com/commons/logx v1.0.5-rc.4
 	gopkg.inshopline.com/commons/metricx v1.0.1
 	gopkg.inshopline.com/commons/sentinel-go v1.0.0
 	gopkg.inshopline.com/commons/traffic-plugin-dubbo v0.0.2
@@ -167,5 +167,5 @@ require (
 	gopkg.inshopline.com/commons/configx v1.0.5 // indirect
 	gopkg.inshopline.com/commons/env v1.1.1 // indirect
 	gopkg.inshopline.com/commons/traffic-plugins v1.0.0 // indirect
-	gopkg.inshopline.com/commons/utils v1.2.0 // indirect
+	gopkg.inshopline.com/commons/utils v1.2.2 // indirect
 )
