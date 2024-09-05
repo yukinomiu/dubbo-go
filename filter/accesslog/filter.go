@@ -20,6 +20,7 @@ package accesslog
 
 import (
 	"context"
+	"gopkg.inshopline.com/commons/logx"
 	"os"
 	"reflect"
 	"strings"
@@ -58,8 +59,9 @@ const (
 )
 
 var (
-	once            sync.Once
-	accessLogFilter *Filter
+	once             sync.Once
+	accessLogFilter  *Filter
+	diagnosticLogger = logx.GetDiagnosticLogger("dubbox").NoContext()
 )
 
 func init() {
@@ -185,7 +187,8 @@ func (f *Filter) OnResponse(_ context.Context, result protocol.Result, _ protoco
 func (f *Filter) writeLogToFile(data Data) {
 	accessLog := data.accessLog
 	if isDefault(accessLog) {
-		logger.Info(data.toLogMessage())
+		// logger.Info(data.toLogMessage())
+		printAccessLogging(data)
 		return
 	}
 
@@ -284,4 +287,18 @@ func (d *Data) toLogMessage() string {
 		builder.WriteString(d.data[Arguments])
 	}
 	return builder.String()
+}
+
+// dubbox: access logging
+func printAccessLogging(d Data) {
+	m := d.data
+	if len(m) == 0 {
+		return
+	}
+
+	keys := make([]any, 0, len(m))
+	for k, v := range m {
+		keys = append(keys, logx.WithKey(k, v))
+	}
+	diagnosticLogger.Info("dubbox access log", keys...)
 }
