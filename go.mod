@@ -40,7 +40,7 @@ require (
 	github.com/mattn/go-colorable v0.1.13
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd
-	github.com/nacos-group/nacos-sdk-go/v2 v2.999.5
+	github.com/nacos-group/nacos-sdk-go/v2 v2.999.9
 	github.com/oliveagle/jsonpath v0.0.0-20180606110733-2e52cf6e6852
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
@@ -163,9 +163,9 @@ require (
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gopkg.inshopline.com/commons/api v1.0.0 // indirect
-	gopkg.inshopline.com/commons/bizerror v1.2.2 // indirect
-	gopkg.inshopline.com/commons/configx v1.0.5 // indirect
-	gopkg.inshopline.com/commons/env v1.1.1 // indirect
+	gopkg.inshopline.com/commons/bizerror v1.1.0 // indirect
+	gopkg.inshopline.com/commons/configx v1.0.3 // indirect
+	gopkg.inshopline.com/commons/env v1.1.0 // indirect
 	gopkg.inshopline.com/commons/traffic-plugins v1.0.0 // indirect
 	gopkg.inshopline.com/commons/utils v1.2.2 // indirect
 )
