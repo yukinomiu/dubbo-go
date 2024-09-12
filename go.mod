@@ -69,9 +69,9 @@ require (
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.inshopline.com/commons/chaos-go-agent v1.0.0
-	gopkg.inshopline.com/commons/constx v1.1.4-0.20240902032329-d2f9d4743509
+	gopkg.inshopline.com/commons/constx v1.1.4
 	gopkg.inshopline.com/commons/loadx v1.3.0
-	gopkg.inshopline.com/commons/logx v1.0.5-rc.4
+	gopkg.inshopline.com/commons/logx v1.0.5
 	gopkg.inshopline.com/commons/metricx v1.0.1
 	gopkg.inshopline.com/commons/sentinel-go v1.0.0
 	gopkg.inshopline.com/commons/traffic-plugin-dubbo v0.0.2
