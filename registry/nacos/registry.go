@@ -19,7 +19,6 @@ package nacos
 
 import (
 	"bytes"
-	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -41,7 +40,6 @@ import (
 	"dubbo.apache.org/dubbo-go/v3/metrics"
 	metricsRegistry "dubbo.apache.org/dubbo-go/v3/metrics/registry"
 	"dubbo.apache.org/dubbo-go/v3/registry"
-	"dubbo.apache.org/dubbo-go/v3/remoting"
 	"dubbo.apache.org/dubbo-go/v3/remoting/nacos"
 )
 
@@ -275,22 +273,7 @@ func (nr *nacosRegistry) UnSubscribe(url *common.URL, _ registry.NotifyListener)
 
 // LoadSubscribeInstances load subscribe instance
 func (nr *nacosRegistry) LoadSubscribeInstances(url *common.URL, notify registry.NotifyListener) error {
-	serviceName := getSubscribeName(url)
-	groupName := nr.GetURL().GetParam(constant.RegistryGroupKey, defaultGroup)
-	instances, err := nr.namingClient.Client().SelectAllInstances(vo.SelectAllInstancesParam{
-		ServiceName: serviceName,
-		GroupName:   groupName,
-	})
-	if err != nil {
-		return perrors.New(fmt.Sprintf("could not query the instances for serviceName=%s,groupName=%s,error=%v",
-			serviceName, groupName, err))
-	}
-
-	for i := range instances {
-		if newUrl := generateUrl(instances[i]); newUrl != nil {
-			notify.Notify(&registry.ServiceEvent{Action: remoting.EventTypeAdd, Service: newUrl})
-		}
-	}
+	// dubbox fix: remove sync load
 	return nil
 }
 

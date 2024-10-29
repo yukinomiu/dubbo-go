@@ -73,6 +73,7 @@ func NewNacosListener(url, regURL *common.URL, namingClient *nacosClient.NacosNa
 		done:         make(chan struct{}),
 	}
 	err := listener.startListen()
+	listener.ResolveNow() // dubbox fix
 	return listener, err
 }
 
@@ -87,6 +88,7 @@ func NewNacosListenerWithServiceName(serviceName string, url, regURL *common.URL
 		done:         make(chan struct{}),
 	}
 	err := listener.startListenWithServiceName(serviceName)
+	listener.ResolveNow() // dubbox fix
 	return listener, err
 }
 
@@ -120,6 +122,21 @@ func generateUrl(instance model.Instance) *common.URL {
 		common.WithParams(urlMap),
 		common.WithPath(path),
 	)
+}
+
+// ResolveNow resolve all service instance
+// dubbox fix
+func (nl *nacosListener) ResolveNow() {
+	instances, err := nl.namingClient.Client().SelectAllInstances(vo.SelectAllInstancesParam{
+		ServiceName: nl.subscribeParam.ServiceName,
+		GroupName:   nl.subscribeParam.GroupName,
+	})
+	if err != nil {
+		logger.Errorf("dubbox: resovle service instance error: %v, serivce-name: %s, group-name: %s",
+			err.Error(), nl.subscribeParam.ServiceName, nl.subscribeParam.GroupName)
+		return
+	}
+	nl.Callback(instances, nil)
 }
 
 // Callback will be invoked when got subscribed events.

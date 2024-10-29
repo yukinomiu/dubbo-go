@@ -71,6 +71,7 @@ type RegistryDirectory struct {
 	consumerConfigurationListener  *consumerConfigurationListener
 	referenceConfigurationListener *referenceConfigurationListener
 	registerLock                   sync.Mutex // this lock if for register
+	notifyLock                     sync.Mutex // dubbox fix
 	SubscribedUrl                  *common.URL
 	RegisteredUrl                  *common.URL
 }
@@ -131,6 +132,10 @@ func (dir *RegistryDirectory) Subscribe(url *common.URL) error {
 
 // Notify monitor changes from registry,and update the cacheServices
 func (dir *RegistryDirectory) Notify(event *registry.ServiceEvent) {
+	// dubbox fix: add notify lock
+	dir.notifyLock.Lock()
+	defer dir.notifyLock.Unlock()
+
 	if event == nil {
 		return
 	}
@@ -142,6 +147,10 @@ func (dir *RegistryDirectory) Notify(event *registry.ServiceEvent) {
 // NotifyAll notify the events that are complete Service Event List.
 // After notify the address, the callback func will be invoked.
 func (dir *RegistryDirectory) NotifyAll(events []*registry.ServiceEvent, callback func()) {
+	// dubbox fix: add notify lock
+	dir.notifyLock.Lock()
+	defer dir.notifyLock.Unlock()
+
 	dir.refreshAllInvokers(events, callback)
 }
 
