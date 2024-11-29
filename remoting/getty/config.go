@@ -71,7 +71,7 @@ type (
 		// session
 		SessionTimeout string `default:"60s" yaml:"session-timeout" json:"session-timeout,omitempty"`
 		sessionTimeout time.Duration
-		SessionNumber  int `default:"1000" yaml:"session-number" json:"session-number,omitempty"`
+		SessionNumber  int `default:"2048" yaml:"session-number" json:"session-number,omitempty"`
 
 		// gr pool
 		GrPoolSize  int `default:"0" yaml:"gr-pool-size" json:"gr-pool-size,omitempty"`
@@ -90,7 +90,7 @@ type (
 		ReconnectInterval int `default:"0" yaml:"reconnect-interval" json:"reconnect-interval,omitempty"`
 
 		// session pool
-		ConnectionNum int `default:"16" yaml:"connection-number" json:"connection-number,omitempty"`
+		ConnectionNum int `default:"8" yaml:"connection-number" json:"connection-number,omitempty"`
 
 		// heartbeat
 		HeartbeatPeriod string `default:"60s" yaml:"heartbeat-period" json:"heartbeat-period,omitempty"`
@@ -118,7 +118,7 @@ type (
 func GetDefaultClientConfig() *ClientConfig {
 	defaultClientConfig := &ClientConfig{
 		ReconnectInterval: 0,
-		ConnectionNum:     16,
+		ConnectionNum:     8,
 		HeartbeatPeriod:   "30s",
 		SessionTimeout:    "180s",
 		GrPoolSize:        200,
@@ -146,7 +146,7 @@ func GetDefaultClientConfig() *ClientConfig {
 func GetDefaultServerConfig() *ServerConfig {
 	defaultServerConfig := &ServerConfig{
 		SessionTimeout: "180s",
-		SessionNumber:  700,
+		SessionNumber:  2048,
 		GrPoolSize:     120,
 		QueueNumber:    6,
 		QueueLen:       64,
