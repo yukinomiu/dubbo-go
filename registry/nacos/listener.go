@@ -60,10 +60,12 @@ type nacosListener struct {
 	cacheLock      sync.Mutex
 	done           chan struct{}
 	subscribeParam *vo.SubscribeParam
+
+	instanceCh chan []model.Instance // dubbox fix: use for communication between registry and listener
 }
 
 // NewNacosListener creates a data listener for nacos
-func NewNacosListener(url, regURL *common.URL, namingClient *nacosClient.NacosNamingClient) (*nacosListener, error) {
+func NewNacosListener(url, regURL *common.URL, namingClient *nacosClient.NacosNamingClient, instanceCh chan []model.Instance) (*nacosListener, error) {
 	listener := &nacosListener{
 		namingClient: namingClient,
 		listenURL:    url,
@@ -71,14 +73,14 @@ func NewNacosListener(url, regURL *common.URL, namingClient *nacosClient.NacosNa
 		events:       gxchan.NewUnboundedChan(32),
 		instanceMap:  map[string]model.Instance{},
 		done:         make(chan struct{}),
+		instanceCh:   instanceCh,
 	}
 	err := listener.startListen()
-	listener.ResolveNow() // dubbox fix
 	return listener, err
 }
 
 // NewNacosListener creates a data listener for nacos
-func NewNacosListenerWithServiceName(serviceName string, url, regURL *common.URL, namingClient *nacosClient.NacosNamingClient) (*nacosListener, error) {
+func NewNacosListenerWithServiceName(serviceName string, url, regURL *common.URL, namingClient *nacosClient.NacosNamingClient, instanceCh chan []model.Instance) (*nacosListener, error) {
 	listener := &nacosListener{
 		namingClient: namingClient,
 		listenURL:    url,
@@ -86,9 +88,9 @@ func NewNacosListenerWithServiceName(serviceName string, url, regURL *common.URL
 		events:       gxchan.NewUnboundedChan(32),
 		instanceMap:  map[string]model.Instance{},
 		done:         make(chan struct{}),
+		instanceCh:   instanceCh,
 	}
 	err := listener.startListenWithServiceName(serviceName)
-	listener.ResolveNow() // dubbox fix
 	return listener, err
 }
 
@@ -124,21 +126,6 @@ func generateUrl(instance model.Instance) *common.URL {
 	)
 }
 
-// ResolveNow resolve all service instance
-// dubbox fix
-func (nl *nacosListener) ResolveNow() {
-	instances, err := nl.namingClient.Client().SelectAllInstances(vo.SelectAllInstancesParam{
-		ServiceName: nl.subscribeParam.ServiceName,
-		GroupName:   nl.subscribeParam.GroupName,
-	})
-	if err != nil {
-		logger.Errorf("dubbox: resovle service instance error: %v, serivce-name: %s, group-name: %s",
-			err.Error(), nl.subscribeParam.ServiceName, nl.subscribeParam.GroupName)
-		return
-	}
-	nl.Callback(instances, nil)
-}
-
 // Callback will be invoked when got subscribed events.
 func (nl *nacosListener) Callback(services []model.Instance, err error) {
 	if err != nil {
@@ -151,6 +138,18 @@ func (nl *nacosListener) Callback(services []model.Instance, err error) {
 			logger.Errorf("nacos subscribe callback error:%s, subscribe:%+v ", errStr, nl.subscribeParam)
 			return
 		}
+	}
+
+	// dubbox fix: sync with registry instances
+	select {
+	case instances := <-nl.instanceCh:
+		if len(instances) > 0 && len(nl.instanceMap) == 0 {
+			for _, instance := range instances {
+				host := instance.Ip + ":" + strconv.Itoa(int(instance.Port))
+				nl.instanceMap[host] = instance
+			}
+		}
+	default:
 	}
 
 	addInstances := make([]model.Instance, 0, len(services))
