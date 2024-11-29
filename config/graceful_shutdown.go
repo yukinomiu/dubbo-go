@@ -154,7 +154,9 @@ func destroyProviderProtocols(consumerProtocols *gxset.HashSet) {
 func destroyConsumerProtocols(consumerProtocols *gxset.HashSet) {
 	logger.Info("Graceful shutdown --- Second Destroy consumer's protocols. ")
 	for name := range consumerProtocols.Items {
-		extension.GetProtocol(name.(string)).Destroy()
+		if name != "" {
+			extension.GetProtocol(name.(string)).Destroy()
+		}
 	}
 }
 
