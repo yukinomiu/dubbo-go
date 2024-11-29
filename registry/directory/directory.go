@@ -139,6 +139,10 @@ func (dir *RegistryDirectory) Notify(event *registry.ServiceEvent) {
 	if event == nil {
 		return
 	}
+
+	logger.Infof("dubbox: updating service provider instances, serivce=%s, action=%s, provider=%s",
+		dir.serviceType, event.Action.String(), event.Service.Ip+":"+event.Service.Port)
+
 	start := time.Now()
 	dir.refreshInvokers(event)
 	metrics.Publish(metricsRegistry.NewNotifyEvent(start))
