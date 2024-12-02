@@ -243,10 +243,11 @@ func (c *Client) selectSession(addr string) (*gettyRPCClient, getty.Session, err
 
 	if !c.gettyClientCreated.Load() {
 		c.gettyClientMux.Lock()
+		defer c.gettyClientMux.Unlock() // dubbox fix: unlock in defer
+
 		if c.gettyClient == nil {
 			rpcClientConn, rpcErr := newGettyRPCClientConn(c, addr)
 			if rpcErr != nil {
-				c.gettyClientMux.Unlock()
 				return nil, nil, perrors.WithStack(rpcErr)
 			}
 			c.gettyClientCreated.Store(true)
@@ -254,7 +255,6 @@ func (c *Client) selectSession(addr string) (*gettyRPCClient, getty.Session, err
 		}
 		client := c.gettyClient
 		session := c.gettyClient.selectSession()
-		c.gettyClientMux.Unlock()
 		return client, session, nil
 	}
 	c.gettyClientMux.RLock()
