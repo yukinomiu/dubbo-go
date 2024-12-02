@@ -18,9 +18,6 @@
 package config
 
 import (
-	"os"
-	"os/signal"
-	"runtime/debug"
 	"time"
 )
 
@@ -71,7 +68,8 @@ func gracefulShutdownInit() {
 		filter.Set(constant.GracefulShutdownFilterShutdownConfig, GetShutDown())
 	}
 
-	if GetShutDown().GetInternalSignal() {
+	// dubbox fix: remove internal signal listener
+	/*if GetShutDown().GetInternalSignal() {
 		signals := make(chan os.Signal, 1)
 		signal.Notify(signals, ShutdownSignals...)
 
@@ -94,7 +92,7 @@ func gracefulShutdownInit() {
 				os.Exit(0)
 			}
 		}()
-	}
+	}*/
 }
 
 // BeforeShutdown provides processing flow before shutdown
