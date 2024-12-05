@@ -26,7 +26,7 @@ func (f *ProviderMetric) Invoke(ctx context.Context, invoker protocol.Invoker, i
 	if result != nil {
 		err = result.Error()
 	}
-	serverRecordMetric(invocation.MethodName(), duration, err)
+	serverRecordMetric(getInterface(invoker), invocation.MethodName(), duration, err)
 	return result
 }
 
@@ -39,7 +39,7 @@ func newProviderMetric() filter.Filter {
 	return &ProviderMetric{}
 }
 
-func serverRecordMetric(methodName string, duration time.Duration, err error) {
+func serverRecordMetric(dubboInterface string, methodName string, duration time.Duration, err error) {
 	defer func() {
 		if e := recover(); e != nil {
 			logger.Errorf("server metric panic recovered: %v", e)
@@ -47,7 +47,7 @@ func serverRecordMetric(methodName string, duration time.Duration, err error) {
 	}()
 
 	durationMs := duration.Milliseconds()
-	metricx.CountDurationAndCode(methodName, durationMs, errToCode(err), defaultServerMetricMap)
+	metricx.CountDurationAndCode(metricKey(dubboInterface, methodName), durationMs, errToCode(err), defaultServerMetricMap)
 	return
 }
 

@@ -26,7 +26,7 @@ func (f *ConsumerMetric) Invoke(ctx context.Context, invoker protocol.Invoker, i
 	if result != nil {
 		err = result.Error()
 	}
-	clientRecordMetric(invocation.MethodName(), duration, err)
+	clientRecordMetric(getInterface(invoker), invocation.MethodName(), duration, err)
 	return result
 }
 
@@ -39,7 +39,7 @@ func newConsumerMetric() filter.Filter {
 	return &ConsumerMetric{}
 }
 
-func clientRecordMetric(methodName string, duration time.Duration, err error) {
+func clientRecordMetric(dubboInterface string, methodName string, duration time.Duration, err error) {
 	defer func() {
 		if e := recover(); e != nil {
 			logger.Errorf("client metric panic recovered: %v", e)
@@ -47,7 +47,7 @@ func clientRecordMetric(methodName string, duration time.Duration, err error) {
 	}()
 
 	durationMs := duration.Milliseconds()
-	metricx.CountDurationAndCode(methodName, durationMs, errToCode(err), defaultClientMetricMap)
+	metricx.CountDurationAndCode(metricKey(dubboInterface, methodName), durationMs, errToCode(err), defaultClientMetricMap)
 	return
 }
 

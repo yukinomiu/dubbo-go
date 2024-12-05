@@ -40,7 +40,7 @@ require (
 	github.com/mattn/go-colorable v0.1.13
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd
-	github.com/nacos-group/nacos-sdk-go/v2 v2.999.9
+	github.com/nacos-group/nacos-sdk-go/v2 v2.999.10
 	github.com/oliveagle/jsonpath v0.0.0-20180606110733-2e52cf6e6852
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
@@ -48,7 +48,7 @@ require (
 	github.com/prometheus/client_golang v1.13.0
 	github.com/prometheus/common v0.37.0
 	github.com/sirupsen/logrus v1.8.1
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 	go.etcd.io/etcd/api/v3 v3.5.7
 	go.etcd.io/etcd/client/v3 v3.5.7
 	go.opentelemetry.io/contrib/propagators/b3 v1.10.0
@@ -70,17 +70,17 @@ require (
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.inshopline.com/commons/chaos-go-agent v1.0.0
 	gopkg.inshopline.com/commons/constx v1.1.4
-	gopkg.inshopline.com/commons/loadx v1.3.0
-	gopkg.inshopline.com/commons/logx v1.0.5
-	gopkg.inshopline.com/commons/metricx v1.0.1
-	gopkg.inshopline.com/commons/sentinel-go v1.0.0
+	gopkg.inshopline.com/commons/loadx v1.4.2
+	gopkg.inshopline.com/commons/logx v1.0.6
+	gopkg.inshopline.com/commons/metricx v1.1.1
+	gopkg.inshopline.com/commons/sentinel-go v1.0.2
 	gopkg.inshopline.com/commons/traffic-plugin-dubbo v0.0.2
 )
 
 require (
 	cloud.google.com/go/compute v1.23.3 // indirect
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
-	github.com/BurntSushi/toml v1.3.2 // indirect
+	github.com/BurntSushi/toml v1.4.0 // indirect
 	github.com/alibaba/sentinel-golang/pkg/datasource/nacos v0.0.0-20230626085943-08071855bc67 // indirect
 	github.com/alibabacloud-go/debug v0.0.0-20190504072949-9472017b5c68 // indirect
 	github.com/alibabacloud-go/tea v1.1.17 // indirect
@@ -115,7 +115,7 @@ require (
 	github.com/k0kubun/pp v3.0.1+incompatible // indirect
 	github.com/leodido/go-urn v1.2.2 // indirect
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible // indirect
-	github.com/lestrrat-go/strftime v1.0.6 // indirect
+	github.com/lestrrat-go/strftime v1.1.0 // indirect
 	github.com/lufia/plan9stats v0.0.0-20211012122336-39d0f177ccd0 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
@@ -163,9 +163,9 @@ require (
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gopkg.inshopline.com/commons/api v1.0.0 // indirect
-	gopkg.inshopline.com/commons/bizerror v1.1.0 // indirect
-	gopkg.inshopline.com/commons/configx v1.0.3 // indirect
-	gopkg.inshopline.com/commons/env v1.1.0 // indirect
+	gopkg.inshopline.com/commons/bizerror v1.2.1 // indirect
+	gopkg.inshopline.com/commons/configx v1.0.8 // indirect
+	gopkg.inshopline.com/commons/env v1.1.1 // indirect
 	gopkg.inshopline.com/commons/traffic-plugins v1.0.0 // indirect
-	gopkg.inshopline.com/commons/utils v1.2.2 // indirect
+	gopkg.inshopline.com/commons/utils v1.2.4 // indirect
 )
