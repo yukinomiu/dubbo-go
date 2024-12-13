@@ -21,10 +21,8 @@ import (
 	"bytes"
 	"dubbo.apache.org/dubbo-go/v3/remoting"
 	"fmt"
-	"github.com/nacos-group/nacos-sdk-go/v2/model"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 )
 
@@ -59,9 +57,7 @@ type nacosRegistry struct {
 	*common.URL
 	namingClient *nacosClient.NacosNamingClient
 	registryUrls []*common.URL
-
-	loadOnce   sync.Once
-	instanceCh chan []model.Instance // dubbox fix: use for communication between registry and listener
+	instanceMap  *InstanceMap // dubbox fix: use for communication between registry and listener
 }
 
 func getCategory(url *common.URL) string {
@@ -164,7 +160,7 @@ func (nr *nacosRegistry) UnRegister(url *common.URL) error {
 }
 
 func (nr *nacosRegistry) subscribe(conf *common.URL) (registry.Listener, error) {
-	return NewNacosListener(conf, nr.URL, nr.namingClient, nr.instanceCh)
+	return NewNacosListener(conf, nr.URL, nr.namingClient, nr.instanceMap)
 }
 
 // Subscribe returns nil if subscribing registry successfully. If not returns an error.
@@ -248,7 +244,7 @@ func (nr *nacosRegistry) getAllSubscribeServiceNames() ([]string, error) {
 
 // subscribeToService subscribes to a specific service in the registry
 func (nr *nacosRegistry) subscribeToService(url *common.URL, service string) (listener registry.Listener, err error) {
-	return NewNacosListenerWithServiceName(service, url, nr.URL, nr.namingClient, nr.instanceCh)
+	return NewNacosListenerWithServiceName(service, url, nr.URL, nr.namingClient, nr.instanceMap)
 }
 
 // handleServiceEvents receives service events from the listener and notifies the notifyListener
@@ -280,38 +276,26 @@ func (nr *nacosRegistry) UnSubscribe(url *common.URL, _ registry.NotifyListener)
 
 // LoadSubscribeInstances load subscribe instance
 func (nr *nacosRegistry) LoadSubscribeInstances(url *common.URL, notify registry.NotifyListener) error {
-	var (
-		instances []model.Instance
-		err       error
-	)
-
-	nr.loadOnce.Do(func() {
-		serviceName := getSubscribeName(url)
-		groupName := nr.GetURL().GetParam(constant.RegistryGroupKey, defaultGroup)
-		instances, err = nr.namingClient.Client().SelectAllInstances(vo.SelectAllInstancesParam{
-			ServiceName: serviceName,
-			GroupName:   groupName,
-		})
-		if err != nil {
-			err = perrors.New(fmt.Sprintf("could not query the instances for serviceName=%s,groupName=%s,error=%v",
-				serviceName, groupName, err))
-			return
-		}
-
-		for i := range instances {
-			if newUrl := generateUrl(instances[i]); newUrl != nil {
-				notify.Notify(&registry.ServiceEvent{Action: remoting.EventTypeAdd, Service: newUrl})
-			}
-		}
-
-		select {
-		case nr.instanceCh <- instances:
-		default:
-			logger.Error("dubbox: add instances failed, instances channel is full")
-		}
+	serviceName := getSubscribeName(url)
+	groupName := nr.GetURL().GetParam(constant.RegistryGroupKey, defaultGroup)
+	instances, err := nr.namingClient.Client().SelectAllInstances(vo.SelectAllInstancesParam{
+		ServiceName: serviceName,
+		GroupName:   groupName,
 	})
+	if err != nil {
+		return perrors.New(fmt.Sprintf("could not query the instances for serviceName=%s,groupName=%s,error=%v",
+			serviceName, groupName, err))
+	}
 
-	return err
+	for i := range instances {
+		if newUrl := generateUrl(instances[i]); newUrl != nil {
+			notify.Notify(&registry.ServiceEvent{Action: remoting.EventTypeAdd, Service: newUrl})
+		}
+	}
+
+	// store instances
+	nr.instanceMap.OverrideLatestInstances(serviceName, groupName, instances)
+	return nil
 }
 
 func createSubscribeParam(url, regUrl *common.URL, cb callback) *vo.SubscribeParam {
@@ -397,7 +381,7 @@ func newNacosRegistry(url *common.URL) (registry.Registry, error) {
 		URL:          url, // registry.group is recorded at this url
 		namingClient: namingClient,
 		registryUrls: []*common.URL{},
-		instanceCh:   make(chan []model.Instance, 1),
+		instanceMap:  NewInstanceMap(),
 	}
 	return tmpRegistry, nil
 }

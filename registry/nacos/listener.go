@@ -61,34 +61,34 @@ type nacosListener struct {
 	done           chan struct{}
 	subscribeParam *vo.SubscribeParam
 
-	instanceCh chan []model.Instance // dubbox fix: use for communication between registry and listener
+	registryInstanceMap *InstanceMap // dubbox fix: use for communication between registry and listener
 }
 
 // NewNacosListener creates a data listener for nacos
-func NewNacosListener(url, regURL *common.URL, namingClient *nacosClient.NacosNamingClient, instanceCh chan []model.Instance) (*nacosListener, error) {
+func NewNacosListener(url, regURL *common.URL, namingClient *nacosClient.NacosNamingClient, registryInstanceMap *InstanceMap) (*nacosListener, error) {
 	listener := &nacosListener{
-		namingClient: namingClient,
-		listenURL:    url,
-		regURL:       regURL,
-		events:       gxchan.NewUnboundedChan(32),
-		instanceMap:  map[string]model.Instance{},
-		done:         make(chan struct{}),
-		instanceCh:   instanceCh,
+		namingClient:        namingClient,
+		listenURL:           url,
+		regURL:              regURL,
+		events:              gxchan.NewUnboundedChan(32),
+		instanceMap:         map[string]model.Instance{},
+		done:                make(chan struct{}),
+		registryInstanceMap: registryInstanceMap,
 	}
 	err := listener.startListen()
 	return listener, err
 }
 
-// NewNacosListener creates a data listener for nacos
-func NewNacosListenerWithServiceName(serviceName string, url, regURL *common.URL, namingClient *nacosClient.NacosNamingClient, instanceCh chan []model.Instance) (*nacosListener, error) {
+// NewNacosListenerWithServiceName creates a data listener for nacos
+func NewNacosListenerWithServiceName(serviceName string, url, regURL *common.URL, namingClient *nacosClient.NacosNamingClient, registryInstanceMap *InstanceMap) (*nacosListener, error) {
 	listener := &nacosListener{
-		namingClient: namingClient,
-		listenURL:    url,
-		regURL:       regURL,
-		events:       gxchan.NewUnboundedChan(32),
-		instanceMap:  map[string]model.Instance{},
-		done:         make(chan struct{}),
-		instanceCh:   instanceCh,
+		namingClient:        namingClient,
+		listenURL:           url,
+		regURL:              regURL,
+		events:              gxchan.NewUnboundedChan(32),
+		instanceMap:         map[string]model.Instance{},
+		done:                make(chan struct{}),
+		registryInstanceMap: registryInstanceMap,
 	}
 	err := listener.startListenWithServiceName(serviceName)
 	return listener, err
@@ -141,15 +141,14 @@ func (nl *nacosListener) Callback(services []model.Instance, err error) {
 	}
 
 	// dubbox fix: sync with registry instances
-	select {
-	case instances := <-nl.instanceCh:
-		if len(instances) > 0 && len(nl.instanceMap) == 0 {
-			for _, instance := range instances {
-				host := instance.Ip + ":" + strconv.Itoa(int(instance.Port))
-				nl.instanceMap[host] = instance
-			}
+	serviceName := getSubscribeName(nl.listenURL)
+	groupName := nl.regURL.GetParam(constant.RegistryGroupKey, defaultGroup)
+	instances := nl.registryInstanceMap.GetAndRemoveLatestInstances(serviceName, groupName)
+	if len(instances) > 0 {
+		for _, instance := range instances {
+			host := instance.Ip + ":" + strconv.Itoa(int(instance.Port))
+			nl.instanceMap[host] = instance
 		}
-	default:
 	}
 
 	addInstances := make([]model.Instance, 0, len(services))
