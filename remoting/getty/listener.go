@@ -171,7 +171,7 @@ func (h *RpcClientHandler) OnCron(session getty.Session) {
 	}
 
 	if err := heartbeat(session, h.conn.rpcClient.conf.heartbeatTimeout, heartbeatCallBack); err != nil {
-		logger.Warnf("failed to send heartbeat, error{%v}", err)
+		// logger.Warnf("failed to send heartbeat, error{%v}", err) // dubbox fix: remove unnecessary waring logging
 	}
 }
 
@@ -317,7 +317,9 @@ func (h *RpcServerHandler) OnCron(session getty.Session) {
 
 	heartbeatCallBack := func(err error) {
 		if err != nil {
-			logger.Warnf("failed to send heartbeat, error{%v}", err)
+			if h.timeoutTimes >= 3 {
+				logger.Warnf("failed to send heartbeat, error: %s", err.Error())
+			}
 			if rc := config.GetRootConfig(); rc == nil || rc.DubboxConfig == nil || !rc.DubboxConfig.Flag.DisableProviderCloseConnAfterPingFailed {
 				if h.timeoutTimes >= 3 {
 					logger.Warnf("close provider session after heartbeat failed with %d times", h.timeoutTimes)
@@ -335,7 +337,7 @@ func (h *RpcServerHandler) OnCron(session getty.Session) {
 	}
 
 	if err := heartbeat(session, h.server.conf.heartbeatTimeout, heartbeatCallBack); err != nil {
-		logger.Warnf("failed to send heartbeat, error{%v}", err)
+		// logger.Warnf("failed to send heartbeat, error{%v}", err) // dubbox fix: remove unnecessary waring logging
 	}
 }
 
