@@ -42,6 +42,22 @@ type SequenceType int64
 
 func init() {
 	sequence.Store(0)
+	go cleanPendingMap() // dubbo fix: fix map memory leak
+}
+
+func cleanPendingMap() {
+	ticker := time.NewTicker(time.Second * 10)
+	for {
+		<-ticker.C
+		pendingResponses.Range(func(key, value any) bool {
+			if pr, ok := value.(*PendingResponse); ok && pr != nil {
+				if pr.ExpireAt.Before(time.Now()) {
+					pendingResponses.Delete(key)
+				}
+			}
+			return true
+		})
+	}
 }
 
 // SequenceID increase 2 for every request as the same before. We expect that
@@ -135,6 +151,7 @@ type PendingResponse struct {
 	Err       error
 	start     time.Time
 	ReadStart time.Time
+	ExpireAt  time.Time
 	Callback  common.AsyncCallback
 	response  *Response
 	Reply     interface{}
@@ -169,31 +186,13 @@ func (r PendingResponse) GetCallResponse() common.CallbackResponse {
 
 // AddPendingResponse stores the response into map
 func AddPendingResponse(pr *PendingResponse, timeout time.Duration) {
+	if timeout <= 0 {
+		timeout = 6 * time.Second
+	}
+	pr.ExpireAt = time.Now().Add(timeout * 2)
+
 	seq := SequenceType(pr.seq)
 	pendingResponses.Store(seq, pr)
-
-	go func() {
-		defer func() {
-			if r := recover(); r != nil {
-				logger.Errorf("clean timeout pending response panic: %v", r)
-			}
-		}()
-
-		if timeout <= 0 {
-			timeout = 10 * time.Second
-		}
-		cleanTimeout := timeout * 2
-
-		select {
-		case <-time.After(cleanTimeout):
-			if _, ok := pendingResponses.LoadAndDelete(seq); ok {
-				logger.Infof("pending response was deleted after clean timeout: %v, seq: %v",
-					cleanTimeout.String(), int64(seq))
-			}
-		case <-pr.Done:
-			return
-		}
-	}()
 }
 
 // get and remove response

@@ -152,7 +152,11 @@ func (h *RpcClientHandler) OnCron(session getty.Session) {
 
 	heartbeatCallBack := func(err error) {
 		if err != nil {
-			logger.Warnf("failed to send heartbeat, error{%v}", err)
+			if h.timeoutTimes >= 3 {
+				// dubbox fix: warn if timeout more than 3 times
+				logger.Warnf("failed to send heartbeat, error: %s", err.Error())
+			}
+
 			if rc := config.GetRootConfig(); rc == nil || rc.DubboxConfig == nil || !rc.DubboxConfig.Flag.DisableConsumerCloseConnAfterPingFailed {
 				if h.timeoutTimes >= 3 {
 					logger.Warnf("remove consumer session after heartbeat failed with %d times", h.timeoutTimes)
