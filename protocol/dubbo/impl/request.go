@@ -17,18 +17,24 @@
 
 package impl
 
+import "maps"
+
 type RequestPayload struct {
 	Params      interface{}
 	Attachments map[string]interface{}
 }
 
 func NewRequestPayload(args interface{}, atta map[string]interface{}) *RequestPayload {
+	var newAtta map[string]interface{}
 	if atta == nil {
-		atta = make(map[string]interface{})
+		newAtta = make(map[string]interface{})
+	} else {
+		// dubbox fix: use cloned map
+		newAtta = maps.Clone(atta)
 	}
 	return &RequestPayload{
 		Params:      args,
-		Attachments: atta,
+		Attachments: newAtta,
 	}
 }
 

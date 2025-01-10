@@ -18,6 +18,7 @@
 package getty
 
 import (
+	"errors"
 	"math/rand"
 	"sync"
 	"time"
@@ -214,6 +215,11 @@ func (c *Client) Request(request *remoting.Request, timeout time.Duration, respo
 
 	if !request.TwoWay || response.Callback != nil {
 		return nil
+	}
+
+	// dubbox fix: timeout should be larger than zero
+	if timeout <= 0 {
+		return perrors.WithStack(errors.New("dubbox invalid timeout"))
 	}
 
 	select {
