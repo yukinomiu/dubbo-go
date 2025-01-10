@@ -264,11 +264,10 @@ func (c *Client) selectSession(addr string) (*gettyRPCClient, getty.Session, err
 		return client, session, nil
 	}
 	c.gettyClientMux.RLock()
+	defer c.gettyClientMux.RUnlock()
 	client := c.gettyClient
 	session := c.gettyClient.selectSession()
-	c.gettyClientMux.RUnlock()
 	return client, session, nil
-
 }
 
 func (c *Client) transfer(session getty.Session, request *remoting.Request, timeout time.Duration) (int, int, error) {
