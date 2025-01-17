@@ -134,7 +134,7 @@ func GetDefaultClientConfig() *ClientConfig {
 			TcpReadTimeout:   "1s",
 			TcpWriteTimeout:  "5s",
 			WaitTimeout:      "1s",
-			MaxMsgLen:        102400,
+			MaxMsgLen:        1024000, // dubbox fix: max msg length set to 1000KiB
 			SessionName:      "client",
 		},
 	}
@@ -160,7 +160,7 @@ func GetDefaultServerConfig() *ServerConfig {
 			TcpReadTimeout:   "1s",
 			TcpWriteTimeout:  "5s",
 			WaitTimeout:      "1s",
-			MaxMsgLen:        102400,
+			MaxMsgLen:        1024000, // dubbox fix: max msg length set to 1000KiB
 			SessionName:      "server",
 		},
 	}

@@ -48,6 +48,14 @@ var (
 
 func initServer(protocol string) {
 	srvConf = GetDefaultServerConfig()
+
+	// dubbox fix: use dubbox session params first
+	defer func() {
+		if dc := config.GetRootConfig().DubboxConfig; dc != nil && dc.SessionParams.MaxMsgLen > 0 {
+			srvConf.GettySessionParam.MaxMsgLen = dc.SessionParams.MaxMsgLen
+		}
+	}()
+
 	if protocol == "" {
 		return
 	}

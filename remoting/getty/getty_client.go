@@ -57,6 +57,14 @@ var (
 // it is init client for single protocol.
 func initClient(protocol string) {
 	clientConf = GetDefaultClientConfig()
+
+	// dubbox fix: use dubbox session params first
+	defer func() {
+		if dc := config.GetRootConfig().DubboxConfig; dc != nil && dc.SessionParams.MaxMsgLen > 0 {
+			clientConf.GettySessionParam.MaxMsgLen = dc.SessionParams.MaxMsgLen
+		}
+	}()
+
 	if protocol == "" {
 		return
 	}
