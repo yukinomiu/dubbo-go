@@ -75,7 +75,8 @@ func (c *DubboCodec) EncodeRequest(request *remoting.Request) (*bytes.Buffer, er
 		// it will be wrapped in readwrite.Write .
 		return nil, perrors.WithStack(err)
 	}
-	svc.Timeout = time.Duration(timeout)
+	// dubbox fix: use millisecond
+	svc.Timeout = time.Duration(timeout) * time.Millisecond
 
 	header := impl.DubboHeader{}
 	serialization := invocation.GetAttachmentWithDefaultValue(constant.SerializationKey, constant.Hessian2Serialization)
