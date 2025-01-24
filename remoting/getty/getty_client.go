@@ -190,13 +190,18 @@ func (c *Client) Connect(url *common.URL) error {
 
 // Close close network connection
 func (c *Client) Close() {
-	c.mux.Lock()
-	client := c.gettyClient
-	c.gettyClient = nil
-	c.clientClosed = true
-	c.mux.Unlock()
+	var client *gettyRPCClient
+
+	func() {
+		c.mux.Lock()
+		defer c.mux.Unlock() // dubbo fix: unlock in defer
+		client = c.gettyClient
+		c.gettyClient = nil
+		c.clientClosed = true
+	}()
+
 	if client != nil {
-		client.close()
+		_ = client.close()
 	}
 }
 
@@ -260,7 +265,14 @@ func (c *Client) selectSession(addr string) (*gettyRPCClient, getty.Session, err
 		defer c.gettyClientMux.Unlock() // dubbox fix: unlock in defer
 
 		if c.gettyClient == nil {
+			// dubbox fix: add create time log
+			beforeCreate := time.Now()
 			rpcClientConn, rpcErr := newGettyRPCClientConn(c, addr)
+			duration := time.Since(beforeCreate)
+			if duration > time.Second {
+				logger.Warnf("newGettyRPCClientConn cost %s", duration.String())
+			}
+
 			if rpcErr != nil {
 				return nil, nil, perrors.WithStack(rpcErr)
 			}
@@ -285,8 +297,7 @@ func (c *Client) transfer(session getty.Session, request *remoting.Request, time
 
 func (c *Client) resetRpcConn() {
 	c.gettyClientMux.Lock()
+	defer c.gettyClientMux.Unlock() // dubbox fix: unlock in defer
 	c.gettyClient = nil
 	c.gettyClientCreated.Store(false)
-	c.gettyClientMux.Unlock()
-
 }
