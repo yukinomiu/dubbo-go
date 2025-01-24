@@ -261,8 +261,15 @@ func (c *Client) selectSession(addr string) (*gettyRPCClient, getty.Session, err
 	}
 
 	if !c.gettyClientCreated.Load() {
+		start := time.Now()
 		c.gettyClientMux.Lock()
 		defer c.gettyClientMux.Unlock() // dubbox fix: unlock in defer
+		defer func() {
+			duration := time.Since(start)
+			if duration > time.Second {
+				logger.Warnf("gettyClientMux lock cost %s", duration.String())
+			}
+		}()
 
 		if c.gettyClient == nil {
 			// dubbox fix: add create time log
