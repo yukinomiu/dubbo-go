@@ -179,43 +179,61 @@ func doHandleRequest(rpcInvocation *invocation.RPCInvocation) protocol.RPCResult
 func getExchangeClient(url *common.URL) *remoting.ExchangeClient {
 	clientTmp, ok := exchangeClientMap.Load(url.Location)
 	if !ok {
-		var exchangeClientTmp *remoting.ExchangeClient
+		var (
+			exchangeClientTmp *remoting.ExchangeClient
+			now               time.Time
+		)
+
 		func() {
-			// lock for NewExchangeClient and store into map.
+			// dubbox fix: try lock
 			_, loaded := exchangeLock.LoadOrStore(url.Location, 0x00)
-			// unlock
-			defer exchangeLock.Delete(url.Location)
+
 			if loaded {
-				// retry for 5 times.
-				for i := 0; i < 5; i++ {
+				// dubbox fix: get lock failed, wait and retry
+				now = time.Now()
+				for i := 0; i < 8; i++ {
+					// dubbox fix: max waiting time: 0+200+400+600+800+1000+1200+1400=5.6s
+					time.Sleep(time.Duration(i*200) * time.Millisecond)
 					if clientTmp, ok = exchangeClientMap.Load(url.Location); ok {
-						break
-					} else {
-						// if cannot get, sleep a while.
-						time.Sleep(time.Duration(i*100) * time.Millisecond)
+						return
 					}
 				}
-				return
-			}
 
-			// todo set by config
-			exchangeClientTmp = remoting.NewExchangeClient(url, getty.NewClient(getty.Options{
-				ConnectTimeout: 3 * time.Second,
-				RequestTimeout: 3 * time.Second,
-			}), 3*time.Second, false)
-			// input store
-			if exchangeClientTmp != nil {
-				exchangeClientMap.Store(url.Location, exchangeClientTmp)
+				logger.Errorf("waiting for createing exchange client timeout, timeout=%s", time.Since(now).String())
+			} else {
+				// dubbox fix: unlock when locker has been got
+				defer exchangeLock.Delete(url.Location)
+
+				// todo set by config
+				now = time.Now()
+				exchangeClientTmp = remoting.NewExchangeClient(
+					url,
+					getty.NewClient(getty.Options{
+						ConnectTimeout: 5 * time.Second, // dubbox fix: change 3s to 5s
+						RequestTimeout: 5 * time.Second, // dubbox fix: change 3s to 5s
+					}),
+					5*time.Second, // dubbox fix: change 3s to 5s
+					false,
+				)
+				if exchangeClientTmp != nil {
+					exchangeClientMap.Store(url.Location, exchangeClientTmp)
+				}
+				if cost := time.Since(now); cost.Seconds() > 1 {
+					logger.Warnf("createing exchange client is slow, cost=%s", cost.String())
+				}
 			}
 		}()
+
 		if exchangeClientTmp != nil {
 			return exchangeClientTmp
 		}
 	}
+
 	// cannot dial the server
 	if clientTmp == nil {
 		return nil
 	}
+
 	exchangeClient := clientTmp.(*remoting.ExchangeClient)
 	exchangeClient.IncreaseActiveNumber()
 	return exchangeClient
