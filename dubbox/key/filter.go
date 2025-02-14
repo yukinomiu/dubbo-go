@@ -15,6 +15,7 @@ const (
 	DubboxConsumerMetaFilterKey = "dubbox-consumer-meta"
 
 	DubboxProviderSentinelFilterKey = "dubbox-provider-sentinel"
+	DubboxCircuitBreakerFilterKey   = "dubbox-circuit-breaker"
 
 	DubboxConsumerChaosPluginFilterKey = "dubbox-consumer-chaos-plugin"
 
