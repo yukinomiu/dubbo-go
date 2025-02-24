@@ -73,6 +73,7 @@ const (
 
 	DefaultReferenceFilters = key.DubboxConsumerTraceFilterKey + "," +
 		key.DubboxConsumerMetricFilterKey + "," +
+		key.DubboxConsumerGrayFilterKey + "," +
 		key.DubboxConsumerTagFilterKey + "," +
 		key.DubboxConsumerMetaFilterKey + "," +
 		// key.DubboxConsumerTrafficFilterKey + "," +

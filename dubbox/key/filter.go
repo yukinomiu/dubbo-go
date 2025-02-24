@@ -19,6 +19,8 @@ const (
 
 	DubboxConsumerChaosPluginFilterKey = "dubbox-consumer-chaos-plugin"
 
+	DubboxConsumerGrayFilterKey = "dubbox-consumer-gray"
+
 	DubboxProviderTrafficFilterKey = traffic_dubbo_consts.TrafficProviderFilter
 	DubboxConsumerTrafficFilterKey = traffic_dubbo_consts.TrafficConsumerFilter
 )
