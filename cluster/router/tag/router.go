@@ -91,7 +91,7 @@ func (p *PriorityRouter) Notify(invokers []protocol.Invoker) {
 	dynamicConfiguration.AddListener(key, p)
 	value, err := dynamicConfiguration.GetRule(key)
 	if err != nil {
-		logger.Errorf("query router rule fail,key=%s,err=%v", key, err)
+		logger.Warnf("query router rule fail,key=%s,err=%v", key, err)
 		return
 	}
 	p.Process(&config_center.ConfigChangeEvent{Key: key, Value: value, ConfigType: remoting.EventTypeAdd})

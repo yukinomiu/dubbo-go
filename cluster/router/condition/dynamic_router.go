@@ -131,7 +131,7 @@ func (s *ServiceRouter) Notify(invokers []protocol.Invoker) {
 	dynamicConfiguration.AddListener(key, s)
 	value, err := dynamicConfiguration.GetRule(key)
 	if err != nil {
-		logger.Errorf("Failed to query condition rule, key=%s, err=%v", key, err)
+		logger.Warnf("Failed to query condition rule, key=%s, err=%v", key, err)
 		return
 	}
 	s.Process(&config_center.ConfigChangeEvent{Key: key, Value: value, ConfigType: remoting.EventTypeAdd})
@@ -196,7 +196,7 @@ func (a *ApplicationRouter) Notify(invokers []protocol.Invoker) {
 		a.application = providerApplicaton
 		value, err := dynamicConfiguration.GetRule(key)
 		if err != nil {
-			logger.Errorf("Failed to query condition rule, key=%s, err=%v", key, err)
+			logger.Warnf("Failed to query condition rule, key=%s, err=%v", key, err)
 			return
 		}
 		a.Process(&config_center.ConfigChangeEvent{Key: key, Value: value, ConfigType: remoting.EventTypeUpdate})
