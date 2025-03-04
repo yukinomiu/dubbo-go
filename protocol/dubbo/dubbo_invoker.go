@@ -166,10 +166,17 @@ func (di *DubboInvoker) getTimeout(ivc *invocation.RPCInvocation) time.Duration 
 	timeout := di.timeout                                                //default timeout
 	if attachTimeout, ok := ivc.GetAttachment(constant.TimeoutKey); ok { //check invocation timeout
 		// dubbox fix: fix attachment timeout
-		if t, err := time.ParseDuration(attachTimeout + "ms"); err != nil {
-			logger.Errorf("dubbox: parsing attachment timeout err, timeout: %s, use default: %s", attachTimeout, timeout.String())
+		var (
+			parsedTimeout time.Duration
+			err           error
+		)
+
+		if parsedTimeout, err = time.ParseDuration(attachTimeout + "ms"); err == nil {
+			timeout = parsedTimeout
+		} else if parsedTimeout, err = time.ParseDuration(attachTimeout); err == nil {
+			timeout = parsedTimeout
 		} else {
-			timeout = t
+			logger.Errorf("dubbox: parsing attachment timeout err, attachment timeout: '%s', use default: %s, err: %s", attachTimeout, timeout.String(), err.Error())
 		}
 	} else { // check method timeout
 		methodName := ivc.MethodName()
