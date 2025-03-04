@@ -183,8 +183,14 @@ func (c *ProtocolCodec) Decode(p *DubboPackage) error {
 		return perrors.New("Codec serializer is nil")
 	}
 	if p.IsResponse() {
+		// dubbox: fix nil pending response
+		pr := remoting.GetPendingResponse(remoting.SequenceType(p.Header.ID))
+		if pr == nil {
+			return perrors.New("pending response is nil, response timeout")
+		}
+
 		p.Body = &ResponsePayload{
-			RspObj: remoting.GetPendingResponse(remoting.SequenceType(p.Header.ID)).Reply,
+			RspObj: pr.Reply,
 		}
 	}
 	return c.serializer.Unmarshal(body, p)
