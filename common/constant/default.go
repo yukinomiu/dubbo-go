@@ -69,7 +69,8 @@ const (
 		TpsLimitFilterKey + "," +
 		GenericServiceFilterKey + "," +
 		ExecuteLimitFilterKey + "," +
-		GracefulShutdownProviderFilterKey
+		GracefulShutdownProviderFilterKey + "," +
+		key.DubboxProviderPropagationFilterKey
 
 	DefaultReferenceFilters = key.DubboxConsumerTraceFilterKey + "," +
 		key.DubboxConsumerMetricFilterKey + "," +
