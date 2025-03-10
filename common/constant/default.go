@@ -59,7 +59,8 @@ const (
 const (
 	// DefaultServiceFilters defines default service filters, it is highly recommended
 	// that put the AdaptiveServiceProviderFilterKey at the end.
-	DefaultServiceFilters = EchoFilterKey + "," +
+	DefaultServiceFilters = key.DubboxProviderSentinelFilterKey + "," +
+		EchoFilterKey + "," +
 		key.DubboxProviderTraceFilterKey + "," +
 		key.DubboxProviderMetricFilterKey + "," +
 		key.DubboxProviderTagFilterKey + "," +
@@ -78,7 +79,8 @@ const (
 		key.DubboxConsumerTagFilterKey + "," +
 		key.DubboxConsumerMetaFilterKey + "," +
 		// key.DubboxConsumerTrafficFilterKey + "," +
-		GracefulShutdownConsumerFilterKey
+		GracefulShutdownConsumerFilterKey + "," +
+		key.DubboxCircuitBreakerFilterKey
 )
 
 const (

@@ -23,7 +23,7 @@ func (f *ProviderSentinel) Invoke(ctx context.Context, invoker protocol.Invoker,
 	var (
 		interfaceName = invocation.GetAttachmentWithDefaultValue(constant.InterfaceKey, "")
 		methodName    = invocation.MethodName()
-		resourceName  = interfaceName + ":" + methodName
+		resourceName  = sentinelResourceNamePrefix + interfaceName + ":" + methodName
 	)
 
 	entry, blockErr := flow.Entry(
@@ -32,16 +32,19 @@ func (f *ProviderSentinel) Invoke(ctx context.Context, invoker protocol.Invoker,
 		sentinel.WithResourceType(base.ResTypeRPC),
 	)
 	if blockErr != nil {
-		logger.Warnf("dubbo call was blocked by sentinel, resource: %s, method: %s",
-			resourceName, methodName)
-
+		logger.Warnf("dubbo call was blocked by sentinel, resource: %s, method: %s, block: %s",
+			resourceName, methodName, blockErr.Error())
 		result := &protocol.RPCResult{}
 		result.SetError(blockErr)
 		return result
 	}
 
 	defer entry.Exit()
-	return invoker.Invoke(ctx, invocation)
+	result := invoker.Invoke(ctx, invocation)
+	if result != nil && result.Error() != nil {
+		sentinel.TraceError(entry, result.Error())
+	}
+	return result
 }
 
 func (f *ProviderSentinel) OnResponse(_ context.Context, result protocol.Result, _ protocol.Invoker, _ protocol.Invocation) protocol.Result {

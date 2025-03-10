@@ -13,16 +13,16 @@ import (
 )
 
 var (
-	_ filter.Filter = (*ClientSentinel)(nil)
+	_ filter.Filter = (*ClientCircuitBreaker)(nil)
 )
 
-type ClientSentinel struct{}
+type ClientCircuitBreaker struct{}
 
-func (f *ClientSentinel) Invoke(ctx context.Context, invoker protocol.Invoker, invocation protocol.Invocation) protocol.Result {
+func (f *ClientCircuitBreaker) Invoke(ctx context.Context, invoker protocol.Invoker, invocation protocol.Invocation) protocol.Result {
 	var (
 		interfaceName = invoker.GetURL().Service()
 		methodName    = invocation.MethodName()
-		resourceName  = interfaceName + ":" + methodName
+		resourceName  = circuitBreakerResourceNamePrefix + interfaceName + ":" + methodName
 	)
 	entry, blockErr := flow.Entry(
 		resourceName,
@@ -30,11 +30,13 @@ func (f *ClientSentinel) Invoke(ctx context.Context, invoker protocol.Invoker, i
 		sentinel.WithResourceType(base.ResTypeRPC),
 	)
 	if blockErr != nil {
-		logger.Warnf("dubbo call was blocked by sentinel, resource: %s", resourceName)
+		logger.Warnf("dubbo call was blocked by circuit breaker, resource: %s, method: %s, block: %s",
+			resourceName, methodName, blockErr.Error())
 		result := &protocol.RPCResult{}
 		result.SetError(blockErr)
 		return result
 	}
+
 	defer entry.Exit()
 	result := invoker.Invoke(ctx, invocation)
 	if result != nil && result.Error() != nil {
@@ -43,15 +45,15 @@ func (f *ClientSentinel) Invoke(ctx context.Context, invoker protocol.Invoker, i
 	return result
 }
 
-func (f *ClientSentinel) OnResponse(_ context.Context, result protocol.Result, _ protocol.Invoker, _ protocol.Invocation) protocol.Result {
+func (f *ClientCircuitBreaker) OnResponse(_ context.Context, result protocol.Result, _ protocol.Invoker, _ protocol.Invocation) protocol.Result {
 	// do nothing
 	return result
 }
 
-func newClientSentinel() filter.Filter {
-	return &ClientSentinel{}
+func newClientCircuitBreaker() filter.Filter {
+	return &ClientCircuitBreaker{}
 }
 
 func init() {
-	extension.SetFilter(key.DubboxCircuitBreakerFilterKey, newClientSentinel)
+	extension.SetFilter(key.DubboxCircuitBreakerFilterKey, newClientCircuitBreaker)
 }
