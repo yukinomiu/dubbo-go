@@ -193,7 +193,13 @@ func (di *DubboInvoker) getTimeout(ivc *invocation.RPCInvocation) time.Duration 
 			}
 		}
 	}
+
 	// set timeout into invocation
+	if timeout <= 0 {
+		logger.Warnf("bad invocation timeout: %s, use default 3s instead", timeout.String())
+		timeout = 3 * time.Second
+	}
+
 	ivc.SetAttachment(constant.TimeoutKey, strconv.Itoa(int(timeout.Milliseconds())))
 	return timeout
 }

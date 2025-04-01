@@ -70,7 +70,7 @@ require (
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.inshopline.com/commons/chaos-go-agent v1.0.0
 	gopkg.inshopline.com/commons/constx v1.1.4
-	gopkg.inshopline.com/commons/grayx/allgrayx v1.0.8
+	gopkg.inshopline.com/commons/grayx/allgrayx v1.0.9
 	gopkg.inshopline.com/commons/loadx v1.4.2
 	gopkg.inshopline.com/commons/logx v1.1.2
 	gopkg.inshopline.com/commons/metricx v1.1.1
