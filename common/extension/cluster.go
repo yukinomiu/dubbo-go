@@ -41,7 +41,7 @@ func SetCluster(name string, fcn func() cluster.Cluster) {
 // GetCluster finds the cluster fault-tolerant mode with @name
 func GetCluster(name string) (cluster.Cluster, error) {
 	if clusters[name] == nil {
-		return nil, errors.New(fmt.Sprintf(constant.NonImportErrorMsgFormat, constant.ClusterKeyFailover))
+		return nil, errors.New(fmt.Sprintf(constant.NonImportErrorMsgFormat, name)) // dubbox fix: fix wrong error message
 	}
 	return clusters[name](), nil
 }

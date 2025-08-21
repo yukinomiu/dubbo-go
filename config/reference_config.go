@@ -120,7 +120,7 @@ func (rc *ReferenceConfig) Init(root *RootConfig) error {
 		}
 	}
 	if rc.Cluster == "" {
-		rc.Cluster = "failover"
+		rc.Cluster = constant.ClusterKeyFailfast
 	}
 	if root.Metric.Enable != nil {
 		rc.metricsEnable = *root.Metric.Enable
@@ -259,7 +259,7 @@ func (rc *ReferenceConfig) Refer(srv interface{}) {
 	if len(invokers) == 1 {
 		rc.invoker = invokers[0]
 		if rc.URL != "" {
-			hitClu := constant.ClusterKeyFailover
+			hitClu := constant.ClusterKeyFailfast // dubbox fix: use fail-fast cluster as default
 			if u := rc.invoker.GetURL(); u != nil {
 				hitClu = u.GetParam(constant.ClusterKey, constant.ClusterKeyZoneAware)
 			}
@@ -277,7 +277,7 @@ func (rc *ReferenceConfig) Refer(srv interface{}) {
 			hitClu = constant.ClusterKeyZoneAware
 		} else {
 			// not a registry url, must be direct invoke.
-			hitClu = constant.ClusterKeyFailover
+			hitClu = constant.ClusterKeyFailfast // dubbox fix: use fail-fast cluster as default
 			if u := invokers[0].GetURL(); u != nil {
 				hitClu = u.GetParam(constant.ClusterKey, constant.ClusterKeyZoneAware)
 			}
