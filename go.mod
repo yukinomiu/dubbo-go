@@ -1,8 +1,6 @@
 module dubbo.apache.org/dubbo-go/v3
 
-go 1.21.0
-
-toolchain go1.22.0
+go 1.24.9
 
 require (
 	github.com/RoaringBitmap/roaring v1.2.3
