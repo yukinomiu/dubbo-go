@@ -3,18 +3,17 @@ package trace
 import (
 	"github.com/dubbogo/gost/log/logger"
 	"go.opentelemetry.io/otel/attribute"
-	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/trace"
+	"gopkg.inshopline.com/commons/tracex"
+	"strings"
 )
 
 const (
-	SpanAttrMiddlewareType     = "dubbo"
-	SpanAttrMiddlewareConsumer = "consumer"
-	SpanAttrMiddlewareProvider = "provider"
+	SpanErrorMessageKey = attribute.Key("error.message")
 
-	SpanMetricKey    = attribute.Key("metricx-key")
-	SpanStatusOkDesc = "OK"
+	EventNameRequest  = "request"
+	EventNameResponse = "response"
 )
 
 var (
@@ -33,10 +32,37 @@ func setSpanStatus(span trace.Span, err error) {
 	}()
 
 	if err != nil {
-		span.SetStatus(codes.Error, err.Error())
-	} else {
-		span.SetStatus(codes.Ok, SpanStatusOkDesc)
+		span.SetAttributes(SpanErrorMessageKey.String(err.Error()))
 	}
+	tracex.SetSpanStatus(span, err)
+}
+
+func getInfoFromServiceKey(serviceKey string) (ok bool, pkgName string, simpleServiceName string, group string, version string) {
+	s1 := strings.Split(serviceKey, "/")
+	if len(s1) != 2 {
+		ok = false
+		return
+	}
+
+	group = s1[0]
+	s2 := strings.Split(s1[1], ":")
+	if len(s2) != 2 {
+		ok = false
+		return
+	}
+
+	version = s2[1]
+	fullService := s2[0]
+	idx := strings.LastIndex(fullService, ".")
+	if idx <= 0 || idx >= len(fullService)-1 {
+		ok = false
+		return
+	}
+
+	pkgName = fullService[:idx]
+	simpleServiceName = fullService[idx+1:]
+	ok = true
+	return
 }
 
 type attachmentCarrier struct {

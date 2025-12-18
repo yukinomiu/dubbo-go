@@ -21,6 +21,7 @@ package accesslog
 import (
 	"context"
 	"gopkg.inshopline.com/commons/logx"
+	"gopkg.inshopline.com/commons/tracex"
 	"os"
 	"reflect"
 	"strings"
@@ -105,13 +106,14 @@ func newFilter() filter.Filter {
 // Invoke will check whether user wants to use this filter.
 // If we find the value of key constant.AccessLogFilterKey, we will log the invocation info
 func (f *Filter) Invoke(ctx context.Context, invoker protocol.Invoker, invocation protocol.Invocation) protocol.Result {
-	accessLog := invoker.GetURL().GetParam(constant.AccessLogFilterKey, "")
-
-	// the user do not
-	if len(accessLog) > 0 {
-		accessLogData := Data{data: f.buildAccessLogData(invoker, invocation), accessLog: accessLog}
-		f.logIntoChannel(accessLogData)
+	if !tracex.APMFullMode() { // dubbox: disable access logging when APM full mode is on
+		accessLog := invoker.GetURL().GetParam(constant.AccessLogFilterKey, "")
+		if len(accessLog) > 0 {
+			accessLogData := Data{data: f.buildAccessLogData(invoker, invocation), accessLog: accessLog}
+			f.logIntoChannel(accessLogData)
+		}
 	}
+
 	return invoker.Invoke(ctx, invocation)
 }
 
