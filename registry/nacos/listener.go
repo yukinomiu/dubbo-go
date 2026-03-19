@@ -140,6 +140,14 @@ func (nl *nacosListener) Callback(services []model.Instance, err error) {
 		}
 	}
 
+	addInstances := make([]model.Instance, 0, len(services))
+	delInstances := make([]model.Instance, 0, len(services))
+	updateInstances := make([]model.Instance, 0, len(services))
+	newInstanceMap := make(map[string]model.Instance, len(services))
+
+	nl.cacheLock.Lock()
+	defer nl.cacheLock.Unlock()
+
 	// dubbox fix: sync with registry instances
 	serviceName := getSubscribeName(nl.listenURL)
 	groupName := nl.regURL.GetParam(constant.RegistryGroupKey, defaultGroup)
@@ -151,13 +159,6 @@ func (nl *nacosListener) Callback(services []model.Instance, err error) {
 		}
 	}
 
-	addInstances := make([]model.Instance, 0, len(services))
-	delInstances := make([]model.Instance, 0, len(services))
-	updateInstances := make([]model.Instance, 0, len(services))
-	newInstanceMap := make(map[string]model.Instance, len(services))
-
-	nl.cacheLock.Lock()
-	defer nl.cacheLock.Unlock()
 	for i := range services {
 		if !services[i].Enable {
 			// instance is not available,so ignore it
